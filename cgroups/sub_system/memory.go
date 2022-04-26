@@ -1,5 +1,7 @@
 package sub_system
 
+// 内存限制实例
+
 import (
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -29,7 +31,6 @@ func (m *MemorySubSystem) Set(CGroupPath string, res *ResourceConfig) error {
 			return err
 		}
 	}
-
 	return nil
 }
 
@@ -38,7 +39,6 @@ func (m *MemorySubSystem) Remove(CGroupPath string) error {
 	if err != nil {
 		return err
 	}
-
 	return os.RemoveAll(subSystemCGroupPath)
 }
 
@@ -53,6 +53,5 @@ func (m *MemorySubSystem) Apply(CGroupPath string, pid int) error {
 		logrus.Errorf("write pid to tasks, path: %s, pid: %d, err: %v", tasksPath, pid, err)
 		return err
 	}
-
 	return nil
 }

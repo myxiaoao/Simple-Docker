@@ -1,5 +1,7 @@
 package sub_system
 
+// Cpu 核数限制实例
+
 import (
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -30,7 +32,6 @@ func (c *CpuSetSubSystem) Set(CGroupPath string, res *ResourceConfig) error {
 			return err
 		}
 	}
-
 	return nil
 }
 
@@ -39,7 +40,6 @@ func (c *CpuSetSubSystem) Remove(CGroupPath string) error {
 	if err != nil {
 		return err
 	}
-
 	return os.RemoveAll(subSystemCGroupPath)
 }
 
@@ -56,6 +56,5 @@ func (c *CpuSetSubSystem) Apply(CGroupPath string, pid int) error {
 			return err
 		}
 	}
-
 	return nil
 }

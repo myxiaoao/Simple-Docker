@@ -18,6 +18,7 @@ func main() {
 	app.Commands = []cli.Command{
 		runCommand,
 		initCommand,
+		logCommand,
 	}
 
 	// 启动前配置

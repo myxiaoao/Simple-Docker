@@ -20,7 +20,7 @@ type SubSystem interface {
 	Set(CGroupPath string, res *ResourceConfig) error
 	// Remove 移除这个 CGroup 限制
 	Remove(CGroupPath string) error
-	// Apply 将某个进程添加到 CGroup 中
+	// Apply 将某个进程添加到 CGroup 中，即将进程 ID 添加到 tasks 中。
 	Apply(CGroupPath string, pid int) error
 }
 

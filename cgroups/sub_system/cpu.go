@@ -1,5 +1,7 @@
 package sub_system
 
+// Cpu 时间片限制实例
+
 import (
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -30,7 +32,6 @@ func (c *CpuSubSystem) Set(CGroupPath string, res *ResourceConfig) error {
 			return err
 		}
 	}
-
 	return nil
 }
 
@@ -39,7 +40,6 @@ func (c *CpuSubSystem) Remove(CGroupPath string) error {
 	if err != nil {
 		return err
 	}
-
 	return os.RemoveAll(subSystemCGroupPath)
 }
 
@@ -57,6 +57,5 @@ func (c *CpuSubSystem) Apply(CGroupPath string, pid int) error {
 			return err
 		}
 	}
-
 	return nil
 }
