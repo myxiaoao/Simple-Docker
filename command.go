@@ -98,3 +98,23 @@ var logCommand = cli.Command{
 		return nil
 	},
 }
+
+// 导出容器内容
+var commitCommand = cli.Command{
+	Name:  "commit",
+	Usage: "docker commit a container into image",
+	Flags: []cli.Flag{
+		cli.StringFlag{
+			Name:  "c",
+			Usage: "export image path",
+		},
+	},
+	Action: func(ctx *cli.Context) error {
+		if len(ctx.Args()) < 1 {
+			return fmt.Errorf("missing container name")
+		}
+		imageName := ctx.Args().Get(0)
+		imagePath := ctx.String("c")
+		return container.CommitContainer(imageName, imagePath)
+	},
+}

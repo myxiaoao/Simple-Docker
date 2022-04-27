@@ -1,5 +1,7 @@
 # Simple Docker
 
+> Tips：用来学习 Docker
+
 简单来说 `docker` 本质其实是一个特殊的进程，这个进程特殊在它被 `Namespace` 和 `CGroup` 技术做了装饰，`Namespace` 将该进程与 `Linux`
 系统进行隔离开来，让该进程处于一个虚拟的沙盒中，而 `CGroup` 则对该进程做了一系列的资源限制，两者配合模拟出来一个沙盒的环境。
 
@@ -29,4 +31,67 @@ CGroup 完成资源限制主要通过下面三个组件：
 - Docker 已经将 aufs 改为 Overlay
 - 本实例还是使用 aufs，ubuntu 20.04 需要安装 aufs `apt-get install aufs-tools`
 
-***Tips：主要用来学习 Docker***
+### 指令小记
+
+- 查看 Linux 程序父进程
+
+```bash
+pstree -pl | grep main
+```
+
+- 查看进程id
+
+```bash
+echo $$
+```
+
+- 查看进程的 uts
+
+```bash
+readling /proc/进程id/ns/uts
+```
+
+- 修改hostname
+
+```bash
+hostname -b 新名称
+```
+
+- 常看当前用户和用户组
+
+```bash
+id
+```
+
+- 创建并挂载一个 hierarchy
+
+> 在这个文件夹下面创建新的文件夹，会被 kernel 标记为该 cgroup 的子 cgroup
+
+```bash
+mkdir cgroup-test
+mount -t cgroup -o none,name=cgroup-test cgroup-test ./cgroup-test
+```
+
+- 将其他进程移动到其他的 cgroup 中
+
+> 只要将该进程的 ID 放到其 cgroup 的 tasks 里面即可
+
+```bash
+echo "进程ID" >> cgroup/tasks
+```
+
+- 导出容器
+
+```bash
+docker export -o busybox.tar 45c98e055883(容器ID)
+```
+
+- 移除mount
+
+```bash
+unshare -m
+```
+
+---
+
+**Happy coding guys!!! :-)**

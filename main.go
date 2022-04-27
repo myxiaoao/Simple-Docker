@@ -19,6 +19,7 @@ func main() {
 		runCommand,
 		initCommand,
 		logCommand,
+		commitCommand,
 	}
 
 	// 启动前配置
