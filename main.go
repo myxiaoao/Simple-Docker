@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-const usage = `simple-docker`
+const usage = `Used to learn docker principles.`
 
 func main() {
 	// 创建新的 cli 命令
@@ -20,6 +20,10 @@ func main() {
 		initCommand,
 		logCommand,
 		commitCommand,
+		listCommand,
+		execCommand,
+		stopCommand,
+		removeCommand,
 	}
 
 	// 启动前配置

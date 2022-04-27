@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
+	"os"
 	"simple-docker/cgroups/sub_system"
+	"simple-docker/common"
 	"simple-docker/container"
 )
 
@@ -116,5 +118,65 @@ var commitCommand = cli.Command{
 		imageName := ctx.Args().Get(0)
 		imagePath := ctx.String("c")
 		return container.CommitContainer(imageName, imagePath)
+	},
+}
+
+var listCommand = cli.Command{
+	Name:  "ps",
+	Usage: "list all container",
+	Action: func(ctx *cli.Context) error {
+		container.ListContainerInfo()
+		return nil
+	},
+}
+
+var execCommand = cli.Command{
+	Name:  "exec",
+	Usage: "exec a command into container",
+	Action: func(ctx *cli.Context) error {
+		// 如果环境变量里面有 PID,那么则什么都不执行
+		pid := os.Getenv(common.EnvExecPid)
+		if pid != "" {
+			logrus.Infof("pid callback pid %s, gid: %d", pid, os.Getgid())
+			return nil
+		}
+		if len(ctx.Args()) < 2 {
+			return fmt.Errorf("missing container name or command")
+		}
+
+		var cmdArray []string
+		for _, arg := range ctx.Args().Tail() {
+			cmdArray = append(cmdArray, arg)
+		}
+
+		containerName := ctx.Args().Get(0)
+		container.ExecContainer(containerName, cmdArray)
+		return nil
+	},
+}
+
+var stopCommand = cli.Command{
+	Name:  "stop",
+	Usage: "stop a container",
+	Action: func(ctx *cli.Context) error {
+		if len(ctx.Args()) < 1 {
+			return fmt.Errorf("missing stop container name")
+		}
+		containerName := ctx.Args().Get(0)
+		container.StopContainer(containerName)
+		return nil
+	},
+}
+
+var removeCommand = cli.Command{
+	Name:  "rm",
+	Usage: "rm a container",
+	Action: func(ctx *cli.Context) error {
+		if len(ctx.Args()) < 1 {
+			return fmt.Errorf("missing remove container name")
+		}
+		containerName := ctx.Args().Get(0)
+		container.RemoveContainer(containerName)
+		return nil
 	},
 }

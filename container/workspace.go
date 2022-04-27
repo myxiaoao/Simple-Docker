@@ -127,3 +127,52 @@ func mountVolume(containerName, imageName, volume string) {
 		}
 	}
 }
+
+// DeleteWorkSpace 删除容器工作空间
+func DeleteWorkSpace(containerName, volume string) error {
+	// 1. 卸载挂载点
+	err := unMountPoint(containerName)
+	if err != nil {
+		return err
+	}
+	// 2. 删除读写层
+	err = deleteWriteLayer(containerName)
+	if err != nil {
+		return err
+	}
+	// 3. 删除宿主机与文件系统映射
+	deleteVolume(containerName, volume)
+	return nil
+}
+
+func unMountPoint(containerName string) error {
+	mntPath := path.Join(common.MntPath, containerName)
+	if _, err := exec.Command("umount", mntPath).CombinedOutput(); err != nil {
+		logrus.Errorf("unmount mnt, err: %v", err)
+		return err
+	}
+	err := os.RemoveAll(mntPath)
+	if err != nil {
+		logrus.Errorf("remove mnt path, err: %v", err)
+		return err
+	}
+	return nil
+}
+
+func deleteWriteLayer(containerName string) error {
+	writerLayerPath := path.Join(common.RootPath, common.WriteLayer, containerName)
+	return os.RemoveAll(writerLayerPath)
+}
+
+func deleteVolume(containerName, volume string) {
+	if volume != "" {
+		volumes := strings.Split(volume, ":")
+		if len(volumes) > 1 {
+			mntPath := path.Join(common.MntPath, common.WriteLayer, containerName)
+			containerPath := path.Join(mntPath, volumes[1])
+			if _, err := exec.Command("umount", containerPath).CombinedOutput(); err != nil {
+				logrus.Errorf("unmount container path, err: %v", err)
+			}
+		}
+	}
+}
