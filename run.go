@@ -11,12 +11,12 @@ import (
 )
 
 // Run 命令主要就是启动一个容器，然后对该进程设置隔离
-func Run(cmdArray []string, tty bool, res *sub_system.ResourceConfig, volume, containerName string) {
+func Run(cmdArray []string, tty bool, res *sub_system.ResourceConfig, containerName, imageName, volume string, envs []string) {
 	id := container.GenContainerID(10)
 	if containerName == "" {
 		containerName = id
 	}
-	parent, writePipe := container.NewParentProcess(tty, volume, containerName)
+	parent, writePipe := container.NewParentProcess(tty, volume, containerName, imageName, envs)
 	if parent == nil {
 		logrus.Errorf("failed to new parent process")
 		return

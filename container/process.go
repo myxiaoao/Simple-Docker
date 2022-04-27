@@ -11,7 +11,7 @@ import (
 
 // NewParentProcess 创建一个会隔离的 namespace 进程的 Command
 // 通过 /proc/self/exe init 来调用自身我们定义的 initCommand 命令，然后给该进程设置隔离信息。
-func NewParentProcess(tty bool, volume, containerName string) (*exec.Cmd, *os.File) {
+func NewParentProcess(tty bool, volume, containerName string, imageName string, envs []string) (*exec.Cmd, *os.File) {
 	readPipe, writePipe, _ := os.Pipe()
 	// 调用自身，传入 init 参数，也就是执行 initCommand
 	cmd := exec.Command("/proc/self/exe", "init")
@@ -45,6 +45,13 @@ func NewParentProcess(tty bool, volume, containerName string) (*exec.Cmd, *os.Fi
 	// 设置额外文件句柄
 	cmd.ExtraFiles = []*os.File{
 		readPipe,
+	}
+
+	// 设置环境变量
+	cmd.Env = append(os.Environ(), envs...)
+	err := NewWorkSpace(volume, containerName, imageName)
+	if err != nil {
+		logrus.Errorf("new work space, err: %v", err)
 	}
 
 	return cmd, writePipe

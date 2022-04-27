@@ -26,6 +26,8 @@ CGroup 完成资源限制主要通过下面三个组件：
 - `subsystem`: 是一组资源控制的模块
 - `hierarchy`: 把一组 `CGroup` 串成一个树状结构 (可让其实现继承)
 
+> 主要实现方式是在 `/sys/fs/cgroup/` 文件夹下，根据限制的不同，创建一个新的文件夹即可，kernel 会将这个文件夹标记为它的 `子cgroup`。比如要限制内存使用，则在 `/sys/fs/cgroup/memory/` 下创建 `test-limit-memory` 文件夹即可，将内存限制数写到该文件夹里面的 `memory.limit_in_bytes` 即可。
+
 ### 其他注意项
 
 - Docker 已经将 aufs 改为 Overlay

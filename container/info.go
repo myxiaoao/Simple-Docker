@@ -24,6 +24,10 @@ type Info struct {
 	Status     string `json:"status"`
 }
 
+// RecordContainerInfo 记录容器信息
+// 创建以容器名或 ID 命名的文件夹
+// 在该文件下创建 config.json
+// 将容器信息保存到 config.json 中
 func RecordContainerInfo(containerPID int, cmdArray []string, containerName, containerID string) error {
 	info := &Info{
 		Pid:        strconv.Itoa(containerPID),
@@ -79,6 +83,10 @@ func DeleteContainerInfo(containerName string) {
 	}
 }
 
+// ListContainerInfo 遍历容器
+// 遍历 simple-docker 文件夹
+// 读取每个容器内的 config.json 文件
+// 格式化打印
 func ListContainerInfo() {
 	files, err := ioutil.ReadDir(common.DefaultContainerInfoPath)
 	if err != nil {

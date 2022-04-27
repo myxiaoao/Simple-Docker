@@ -11,6 +11,9 @@ import (
 )
 
 // StopContainer 停止容器，修改容器状态
+// 我们通过 config.json 记录了容器的基本信息，
+// 其中就有一个 status 字段用来记录容器的状态，和一个 PID 字段记录容器的 init 进程在宿主机上的 Pid，
+// 我们停止容器，也就是将该 pid 进程杀死，并更新 status 状态即可
 func StopContainer(containerName string) {
 	info, err := getContainerInfo(containerName)
 	if err != nil {
