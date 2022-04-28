@@ -7,14 +7,16 @@ import (
 	"simple-docker/cgroups/sub_system"
 	"simple-docker/common"
 	"simple-docker/container"
+	"simple-docker/network"
+	"strconv"
 	"strings"
 )
 
 // Run 命令主要就是启动一个容器，然后对该进程设置隔离
-func Run(cmdArray []string, tty bool, res *sub_system.ResourceConfig, containerName, imageName, volume string, envs []string) {
-	id := container.GenContainerID(10)
+func Run(cmdArray []string, tty bool, res *sub_system.ResourceConfig, containerName, imageName, volume, net string, envs, ports []string) {
+	containerID := container.GenContainerID(10)
 	if containerName == "" {
-		containerName = id
+		containerName = containerID
 	}
 	parent, writePipe := container.NewParentProcess(tty, volume, containerName, imageName, envs)
 	if parent == nil {
@@ -27,7 +29,7 @@ func Run(cmdArray []string, tty bool, res *sub_system.ResourceConfig, containerN
 	}
 
 	// 记录容器信息
-	err := container.RecordContainerInfo(parent.Process.Pid, cmdArray, containerName, id)
+	err := container.RecordContainerInfo(parent.Process.Pid, cmdArray, containerName, containerID)
 	if err != nil {
 		logrus.Errorf("record container info, err: %v", err)
 	}
@@ -40,6 +42,26 @@ func Run(cmdArray []string, tty bool, res *sub_system.ResourceConfig, containerN
 	CGroupManager.Set(res)
 	// 将容器进程，加入到各个 subsystem 挂载对应的 CGroup 中
 	CGroupManager.Apply(parent.Process.Pid)
+
+	// 设置网络
+	if net != "" {
+		// 初始化容器网络
+		err = network.Init()
+		if err != nil {
+			logrus.Errorf("network init failed, err: %v", err)
+			return
+		}
+		containerInfo := &container.Info{
+			Id:          containerID,
+			Pid:         strconv.Itoa(parent.Process.Pid),
+			Name:        containerName,
+			PortMapping: ports,
+		}
+		if err := network.Connect(net, containerInfo); err != nil {
+			logrus.Errorf("connect network, err: %v", err)
+			return
+		}
+	}
 
 	sendInitCommand(cmdArray, writePipe)
 

@@ -86,7 +86,8 @@ func CreateMountPoint(containerName, imageName string) error {
 	// 将宿主机上关于容器的读写层和只读层挂载到 /root/mnt/ 容器名里
 	writeLayPath := path.Join(common.RootPath, common.WriteLayer, containerName)
 	imagePath := path.Join(common.RootPath, imageName)
-	dirs := fmt.Sprintf("dirs=%s:%s", writeLayPath, imagePath)
+	//! mount -t aufs -o noxino,dirs=/root/writeLayer/test:/root/busybox none /root/mnt/test
+	dirs := fmt.Sprintf("noxino,dirs=%s:%s", writeLayPath, imagePath)
 	cmd := exec.Command("mount", "-t", "aufs", "-o", dirs, "none", mntPath)
 	if err := cmd.Run(); err != nil {
 		logrus.Errorf("mnt cmd run, err: %v", err)

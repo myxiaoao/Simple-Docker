@@ -6,13 +6,11 @@ import (
 	"os"
 )
 
-const usage = `Used to learn docker principles.`
-
 func main() {
 	// 创建新的 cli 命令
 	app := cli.NewApp()
 	app.Name = "simple-docker"
-	app.Usage = usage
+	app.Usage = `Used to learn docker principles.`
 
 	// 加载 run ,inti 命令
 	app.Commands = []cli.Command{
@@ -24,6 +22,7 @@ func main() {
 		execCommand,
 		stopCommand,
 		removeCommand,
+		networkCommand,
 	}
 
 	// 启动前配置
