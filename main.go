@@ -4,6 +4,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 	"os"
+
+	_ "simple-docker/nsenter"
 )
 
 func main() {

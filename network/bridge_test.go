@@ -7,8 +7,14 @@ import (
 
 func TestBridgeInit(t *testing.T) {
 	d := BridgeNetworkDriver{}
-	_, err := d.Create("192.168.0.1/24", "test-bridge")
-	t.Logf("err: %v", err)
+	err := d.Delete(Network{Name: "test-bridge"})
+	if err != nil {
+		return
+	}
+	_, err = d.Create("192.168.0.1/24", "test-bridge")
+	if err != nil {
+		t.Logf("err: %v", err)
+	}
 }
 
 func TestBridgeConnect(t *testing.T) {
@@ -33,8 +39,14 @@ func TestNetworkConnect(t *testing.T) {
 	}
 
 	d := BridgeNetworkDriver{}
+	err := d.Delete(Network{Name: "test-bridge"})
+	if err != nil {
+		return
+	}
 	n, err := d.Create("192.168.0.1/24", "test-bridge")
-	t.Logf("err: %v", n)
+	if err != nil {
+		t.Logf("err: %v", err)
+	}
 
 	err = Init()
 	if err != nil {

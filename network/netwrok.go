@@ -65,7 +65,7 @@ func (nw *Network) dump(dumpPath string) error {
 	nwPath := path.Join(dumpPath, nw.Name)
 	nwFile, err := os.OpenFile(nwPath, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
-		logrus.Errorf("error：", err)
+		logrus.Errorf("error：%v", err)
 		return err
 	}
 	defer func(nwFile *os.File) {
