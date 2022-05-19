@@ -1,6 +1,7 @@
 # Simple Docker
 
-> Tips：用来学习 Docker
+> Tips：用来学习 Docker  
+> [使用 Go 和 Linux Kernel 技术探究容器化原理](https://mp.weixin.qq.com/s/BBIrbdPd0uRafEy81WYq2g)
 
 简单来说 `docker` 本质其实是一个特殊的进程，这个进程特殊在它被 `Namespace` 和 `CGroup` 技术做了装饰，`Namespace` 将该进程与 `Linux`
 系统进行隔离开来，让该进程处于一个虚拟的沙盒中，而 `CGroup` 则对该进程做了一系列的资源限制，两者配合模拟出来一个沙盒的环境。
